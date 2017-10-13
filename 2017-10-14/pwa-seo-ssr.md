@@ -35,3 +35,56 @@ PWA の構成技術のうち、プログラミングが求められる Service W
 - ./build/es6-unbundled/service-worker.js
 - ./build/es6-unbundled/manifest.json
 
+## SEO/Bot Friendly
+
+SEO は多くのサービスにおいて重要な施策となっているかと思います。
+
+Polymer に限らず、JavaScript による UI ライブラリが共通して抱えている課題もまた SEO 、もとい Bot Friendly です。
+
+### Bot
+
+SEO を考える上では、Bot がどのようにウェブサイトのコンテンツを理解するのかを考える必要があります。
+
+多くの Bot は、私たちが普段使うブラウザでウェブサイトを閲覧するのとは異なる振る舞いをします。
+
+私たちがブラウザでウェブサイトを閲覧するとき、ブラウザは文字列としての HTML を解釈し、JavaScript を実行し、CSS でペイントします。
+
+これによって、サーバーから取得される文字列が例えばこのようなものだとしても、
+
+```html
+<hello-world></hello-world>
+```
+
+最終的にこのようにアプリケーションとして成立するものが画面に表示できます。
+
+```html
+<hello-world>
+	#shadow-root
+    <style>
+    	h1 {
+        	color: blue
+        }
+    </style>
+    <h1>Hello, world!</h1>
+</hello-world>
+```
+
+これらの処理が私たちが知覚できないほど高速に行われることで、あたかも初めから完全な HTML が表示されたかのように見えるようになります。
+
+しかし Bot の場合は違います。
+
+Bot は JavaScript を実行できないことが多く、たいていは文字列としての HTML をパースするだけです。
+
+JavaScript によって UI を構築する Polymer やその他のライブラリで構築されたウェブサイトは、Bot にとってまったく中身のないウェブサイトとして捉えられてしまいます。
+
+例外として Google の Bot はバックエンドが Chrome で実装されているので JavaScript も実行します。
+
+Google だけをターゲットとするなら問題はありませんが、たとえば Facebook や Twitter でシェアされたとき、Slack で URL を投稿したとき、またはウェブサイトを評価する第3者機関やウェブサービスなども考慮する必要があるウェブサイトを運用する場合、やはり Bot 向けの対策が必要になります。
+
+この対策が SSR です。
+
+### SSR
+
+SSR, Server-Side Rendering は、Bot の代わりにサーバーサイドで JavaScript を実行しておき、完成された HTML をレスポンスする技術です。
+
+
