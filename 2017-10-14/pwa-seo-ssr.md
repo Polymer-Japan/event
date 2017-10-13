@@ -59,9 +59,9 @@ SEO を考える上では、Bot がどのようにウェブサイトのコンテ
 
 ```html
 <hello-world>
-	#shadow-root
+    #shadow-root
     <style>
-    	h1 {
+        h1 {
         	color: blue
         }
     </style>
@@ -87,4 +87,75 @@ Google だけをターゲットとするなら問題はありませんが、た�
 
 SSR, Server-Side Rendering は、Bot の代わりにサーバーサイドで JavaScript を実行しておき、完成された HTML をレスポンスする技術です。
 
+SSR には、Node.js 上でフロントエンドの JavaScript を実行する方法と、サーバーにインストールした Chrome などのブラウザでアプリケーションごと実行する方法の 2 つがあります。
+
+Polymer 自体は SSR の機能を提供していませんが、一般的な手法を使って SSR することができます。
+
+## Node.js
+
+Node.js 方式は高速に動作するのが利点です。
+
+Node.js にはブラウザにおける window オブジェクトが存在しないので、window をエミュレートするためのライブラリを使って仮想的なブラウザ上でフロントエンド用の JavaScript を実行します。
+
+Skate.js の提供する SSR 用のメソッドを使うと、Web Components もサーバーサイドで実行できます。
+
+```js
+require('@skatejs/ssr/register');
+const render = require('@skatejs/ssr');
+class Hello extends HTMLElement {
+	connectedCallback () {
+		const shadowRoot = this.attachShadow({ mode: 'open' });
+		shadowRoot.innerHTML = '<span>Hello, world!</span>';
+	}
+}
+customElements.define('x-hello', Hello);
+const hello = new Hello();
+render(hello).then(console.log);
+```
+
+Node.js 方式は高速な代わりに、ブラウザを完全にエミュレートすることはできないため、気をつけないと正しく動作させることができません。
+
+フロントエンドのための JavaScript がサーバーサイドでも動作できるよう、ユニバーサル JavaScript として設計されている必要があります。
+
+## Browser in Server
+
+ブラウザ方式はブラウザで動作するアプリケーションならそのまま動作するのが利点です。
+
+ヘッドレス Chrome などのバイナリファイルをサーバーに置いて、本当のブラウザ上で JavaScript を実行します。
+
+ブラウザにおけるテストだけをパスすれば SSR も安全となるため開発が容易です。また、ブラウザでしか実装されていない新しい API への対応もブラウザで動くならすぐに使うことができます。
+
+ブラウザ方式は開発が容易な代わりに、ブラウザインスタンスの起動などオーバーヘッドが大きいため動作が遅いことが欠点です。
+
+ブラウザ方式の SSR の場合は結果をキャッシュしておいて、定期的にキャッシュをリフレッシュするような仕組みが合わせて必要になるでしょう。
+
+## ShadowDOM
+
+一般的な手法でサーバーサイドで HTML を生成する方法を紹介しました。
+
+しかし Polymer は古典的な HTML ではなく、ShadowDOM を扱います。
+
+ShadowDOM はスコープが閉じているため、HTML を生成できてもまなおドキュメントとして成立した文字列を取得することができません。
+
+ShadowDOM は文字列として表現することが難しいため、Polymer は古典的な HTML でコンポーネントを表現するオプションを持っています。
+
+### ShadyDOM
+
+Polymer を使ったアプリケーションであれば、URL に `?dom=shady` というパラメータを追加するだけで古典的な HTML でコンポーネントを表現することができます。
+
+JavaScript による制御も、次のようにできます。
+
+```js
+window.ShadyDOM = {force: true}; 
+```
+
+### Rendertron
+
+Rendertron という Docker を使うと、ブラウザ方式の SSR が簡単に実装できます。
+
+Chrome チームによるプロジェクトのため、Polymer は自動的に ShadyDOM モードで動作します。
+
+### prerender.io
+
+サイトマップをクロールして自動的に SSR のキャッシュを作ってくれるサービスもあります。
 
