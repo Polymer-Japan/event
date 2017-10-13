@@ -64,7 +64,7 @@ Wego は最大の旅行予約サービスのひとつです。
 
 こちらも Polymer を全面的に活用した PWA となっています。
 
-ttps://www.wegotravel.jp/
+https://www.wegotravel.jp/
 
 ### OLA
 
