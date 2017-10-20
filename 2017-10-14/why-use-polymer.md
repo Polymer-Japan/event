@@ -1,3 +1,25 @@
+**以下のように修正します**
+
+```
+あらすじ
+* 概要
+    * WebComponentsがエコであるとは？
+        * 現状の問題点
+        * WebComponentを使った解決策
+    * WebComponents.orgの紹介
+* WebComponentsを使ってみる
+    * カスタムエレメントを探してみる
+        * Papar-ElelemetなどGoogle製のカスタムエレメントの紹介
+        * 他のベンダー製のカスタムエレメントの紹介
+    * カスタムエレメントを使ってみる
+        * コード紹介
+* WebComponentsを登録してみる
+    * How Toの紹介
+* Polymerの良さ
+    * WebComponentで作るより簡単
+    * WebComponentに搭載れていない機能を使える
+```
+
 #### `[自己紹介]`
 
 #### `[前提]`
